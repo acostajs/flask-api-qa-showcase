@@ -1,0 +1,72 @@
+{
+	"meta": {
+		"title": "Vanier Pozole – Employee Shift API",
+		"role": "Backend Developer",
+		"type": "Academic project",
+		"audience": ["Instructors", "Students"],
+		"status": "Completed"
+	},
+
+	"overview": {
+		"summary": "A Flask-based REST API built to manage restaurant employees and their work shifts, focusing on backend structure, data modeling, and clean JSON responses.",
+		"problem": "Managing employee schedules requires structured data, clear relationships, and reliable CRUD operations.",
+		"solution": "A lightweight REST API using Flask, SQLAlchemy, and Marshmallow to handle employee and shift management with persistent storage."
+	},
+
+	"responsibilities": [
+		"Designed and implemented a REST API using Flask",
+		"Created SQLAlchemy models for employees and shifts",
+		"Implemented full CRUD operations for core resources",
+		"Handled JSON serialization using Marshmallow schemas",
+		"Configured SQLite for persistent local storage"
+	],
+
+	"tech_stack": [
+		"Python",
+		"Flask",
+		"Flask-SQLAlchemy",
+		"Marshmallow",
+		"SQLite",
+		"uv"
+	],
+
+	"architecture": {
+		"approach": "Backend-only REST API with clear separation between routes, models, schemas, and database configuration.",
+		"data_flow": "HTTP requests are processed by Flask routes, persisted via SQLAlchemy models, serialized with Marshmallow, and returned as JSON responses.",
+		"deployment": "Not deployed. The API is intended to run locally for development and testing."
+	},
+
+	"key_features": [
+		"Employee management with CRUD operations",
+		"Shift management linked to employees",
+		"RESTful JSON API",
+		"SQLite-backed persistent storage",
+		"Schema-based serialization"
+	],
+
+	"challenges_and_learnings": [
+		"Designing RESTful endpoints",
+		"Modeling relationships between employees and shifts",
+		"Structuring a clean Flask project",
+		"Handling JSON serialization consistently"
+	],
+
+	"skills_demonstrated": [
+		"Backend API development",
+		"Flask application design",
+		"Relational data modeling",
+		"RESTful architecture"
+	],
+
+	"future_improvements": [
+		"Add validation and error handling",
+		"Improve API documentation",
+		"Add basic authentication",
+		"Expand scheduling rules"
+	],
+
+	"links": {
+		"live_demo": "",
+		"source_code": "https://github.com/acostajs/vanier-pozole"
+	}
+}
