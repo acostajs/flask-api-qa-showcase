@@ -5,15 +5,24 @@ description = "Add your description here"
 readme = "README.md"
 requires-python = ">=3.13"
 dependencies = [
-    "faker>=40.23.0",
     "flask>=3.1.2",
     "flask-sqlalchemy>=3.1.1",
-    "lefthook>=2.1.9",
     "locust>=2.44.4",
     "marshmallow-sqlalchemy>=1.4.2",
+    "sqlalchemy>=2.0.46",
+]
+
+[dependency-groups]
+dev = [
     "pytest>=9.1.1",
+    "lefthook>=2.1.9",
     "pytest-cov>=7.1.0",
     "requests>=2.34.2",
     "ruff>=0.14.14",
-    "sqlalchemy>=2.0.46",
+    "faker>=40.23.0",
+]
+
+[tool.pytest.ini_options]
+pythonpath = [
+  "."
 ]
