@@ -32,3 +32,5 @@ addopts = "--ignore=tests/smoke"
 [tool.taskipy.tasks]
 cov = "pytest --cov=backend"
 coverage-report = "pytest --cov=backend --cov-report=html"
+perf = "locust -f tests/performance/locustfile.py --host http://127.0.0.1:5000"
+perf-report = "locust -f tests/performance/locustfile.py --headless -u 10 -r 2 --run-time 10s --html=tests/performance/report.html --host http://127.0.0.1:5000"

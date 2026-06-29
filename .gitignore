@@ -15,3 +15,6 @@ uv.lock
 .coverage
 .pytest_cache/
 htmlcov/
+
+# Performance Reports
+tests/performance/report.html
