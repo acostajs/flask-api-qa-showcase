@@ -10,3 +10,8 @@ uv.lock
 .DS_Store
 .vscode/
 .idea/
+
+# Testing/Coverage
+.coverage
+.pytest_cache/
+htmlcov/
