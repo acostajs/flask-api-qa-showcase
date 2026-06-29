@@ -29,5 +29,5 @@ pythonpath = [
 ]
 
 [tool.taskipy.tasks]
-test = "pytest"
 cov = "pytest --cov=backend"
+coverage-report = "pytest --cov=backend --cov-report=html"
