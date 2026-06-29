@@ -27,6 +27,7 @@ dev = [
 pythonpath = [
   "."
 ]
+addopts = "--ignore=tests/smoke"
 
 [tool.taskipy.tasks]
 cov = "pytest --cov=backend"
