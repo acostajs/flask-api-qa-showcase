@@ -1,154 +1,222 @@
-# Vanier Pozole – Employee Shift API
+# Pozole | Flask REST API QA Showcase
 
-Vanier College study project for **Web Development Environment 2**.
+[![Coverage Status](https://coveralls.io/repos/github/acostajs/vanier-pozole/badge.svg?branch=main)](https://coveralls.io/github/acostajs/vanier-pozole?branch=main)
 
-Vanier Pozole is a RESTful API built with **Flask** to manage restaurant employees and their work shifts. The project focuses on backend API design, data modeling, and clean JSON-based communication rather than front-end development.
+A REST API built with **Flask** to manage restaurant employees and work shifts.
 
-The API allows creating, reading, updating, and deleting employees and shifts, using a lightweight SQLite database for persistence.
-
----
-
-## Features
-
-- CRUD operations for employees (name, role, availability)
-- CRUD operations for shifts (start time, end time, day, employee assignment)
-- REST-style JSON API
-- SQLite database for persistent storage
-- Marshmallow schemas for model serialization
-- Simple, clear project structure for academic purposes
+Although the application provides a complete backend for employee scheduling, the main purpose of this repository is to showcase my **Software QA and Test Automation** skills. The project demonstrates how to test REST APIs using unit, integration, smoke, and performance testing, along with automated quality checks and continuous integration.
 
 ---
 
-## Tech Stack
+# What This Project Demonstrates
 
-- **Backend:** Flask, Flask-SQLAlchemy  
-- **Serialization:** Marshmallow, marshmallow-sqlalchemy  
-- **Database:** SQLite  
-- **Environment & Packaging:** uv  
-- **Testing:** curl, Postman, or any HTTP client  
+This repository highlights my experience with:
+
+* Building automated API tests with **pytest**
+* Writing **unit, integration, smoke, and performance tests**
+* Testing REST endpoints, validation, and database workflows
+* Measuring API performance with **Locust**
+* Enforcing code quality with **Ruff** and **Git hooks**
+* Running automated checks with **GitHub Actions**
 
 ---
 
-## Project Structure
+# Tech Stack
+
+### Backend
+
+* Flask
+* Flask-SQLAlchemy
+* SQLite
+* Marshmallow
+
+### Testing
+
+* pytest
+* Requests
+* Locust
+* pytest-cov
+
+### Code Quality
+
+* Ruff
+* Lefthook
+* GitHub Actions
+
+### Development
+
+* Astral uv
+
+---
+
+# Project Structure
 
 ```text
-.
-├── main.py               # Entry point (uv run main.py)
-├── pyproject.toml        # uv dependencies
-├── backend/
-│   ├── app.py            # Flask routes and API logic
-│   ├── database.py       # Shared SQLAlchemy instance
-│   ├── schemas.py        # Marshmallow schemas
-│   └── models/
-│       └── models.py     # Employee and Shift models
-└── instance/
-    └── site.db           # SQLite database (gitignored)
-````
+backend/
+    models/
+    app.py
+    database.py
+    schemas.py
+
+tests/
+    integration/
+    performance/
+    smoke/
+    unit/
+    conftest.py
+
+.github/workflows/
+main.py
+```
+
+The **tests/** folder contains different types of automated tests:
+
+* **Unit tests** for API endpoints and validation
+* **Integration tests** for complete employee and shift workflows
+* **Smoke tests** to verify the API is running and responding
+* **Performance tests** using Locust to simulate API traffic
 
 ---
 
-## Setup & Run
+# Getting Started
 
-### 1. Clone the repository
+## Requirements
 
-```bash
-git clone <repo>
-cd vanier-pozole
-```
+* Python
+* Astral uv
 
-### 2. Install dependencies
+Install the project dependencies:
 
 ```bash
 uv sync
 ```
 
-### 3. Run the server
+Install the Git hooks:
+
+```bash
+uv run lefthook install
+```
+
+Start the development server:
 
 ```bash
 uv run main.py
 ```
 
-The server will start at:
+The API will be available at:
 
-```
+```text
 http://127.0.0.1:5000
 ```
 
 ---
 
-## API Endpoints
+# API Endpoints
 
-### Employees
+## Employees
 
-```
-GET    /employees            # List all employees
-POST   /employees            # Create employee
-GET    /employees/<id>       # Get employee by ID
-PUT    /employees/<id>       # Update employee
-DELETE /employees/<id>       # Delete employee
-```
+| Method | Endpoint          |
+| ------ | ----------------- |
+| GET    | `/employees`      |
+| POST   | `/employees`      |
+| GET    | `/employees/<id>` |
+| PUT    | `/employees/<id>` |
+| DELETE | `/employees/<id>` |
 
-Example request body:
+## Shifts
 
-```json
-{
-  "name": "Juan",
-  "role": "Cook",
-  "availability": "Mon-Fri"
-}
-```
-
----
-
-### Shifts
-
-```
-GET    /shifts               # List all shifts
-POST   /shifts               # Create shift
-GET    /shifts/<id>          # Get shift by ID
-PUT    /shifts/<id>          # Update shift
-DELETE /shifts/<id>          # Delete shift
-```
-
-Example request body:
-
-```json
-{
-  "start_time": "09:00",
-  "end_time": "17:00",
-  "day": "Monday",
-  "employee_id": 1
-}
-```
+| Method | Endpoint       |
+| ------ | -------------- |
+| GET    | `/shifts`      |
+| POST   | `/shifts`      |
+| GET    | `/shifts/<id>` |
+| PUT    | `/shifts/<id>` |
+| DELETE | `/shifts/<id>` |
 
 ---
 
-## Testing with curl
+# Running Tests
 
-Create an employee:
+Run the complete test suite:
 
 ```bash
-curl -X POST -H "Content-Type: application/json" \
-  -d '{"name": "Juan", "role": "Backend", "availability": "Full-time"}' \
-  http://127.0.0.1:5000/employees
+uv run pytest
 ```
 
-List employees:
+Generate a coverage summary:
 
 ```bash
-curl http://127.0.0.1:5000/employees
+uv run task cov
+```
+
+Generate an HTML coverage report:
+
+```bash
+uv run task coverage-report
+```
+
+Run the smoke tests:
+
+```bash
+uv run pytest tests/smoke/
+```
+
+Run the performance tests:
+
+```bash
+uv run task perf
+```
+
+Generate a performance report:
+
+```bash
+uv run task perf-report
 ```
 
 ---
 
-## Notes
+# Test Coverage
 
-* This project is backend-only and does not include a front-end UI
-* The focus is on API structure, data modeling, and request handling
-* Designed to be simple, readable, and easy to explain during evaluation
+The project currently has **99% test coverage**.
+
+The automated test suite validates:
+
+* REST API endpoints
+* Request validation
+* CRUD operations
+* Database relationships
+* Employee and shift workflows
+* Error handling
+* API availability
+* Performance under load
 
 ---
 
-## Academic Disclaimer
+# Code Quality
 
-This project was developed for academic purposes as part of a Vanier College course. It is intended to demonstrate understanding of REST APIs, Flask, and database-backed applications.
+The project uses **Lefthook** to automatically run quality checks before code is committed.
+
+The pre-commit workflow includes:
+
+* Ruff formatting
+* Ruff linting
+* Automated pytest execution
+
+Run the checks manually:
+
+```bash
+uv run ruff format .
+uv run ruff check .
+```
+
+---
+
+# Continuous Integration
+
+GitHub Actions automatically runs quality checks whenever code is pushed to the repository.
+
+The CI pipeline includes:
+
+* Ruff linting
+* Automated test execution
+* Continuous validation of the codebase
