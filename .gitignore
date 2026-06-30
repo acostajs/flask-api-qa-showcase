@@ -10,3 +10,12 @@ uv.lock
 .DS_Store
 .vscode/
 .idea/
+
+# Testing/Coverage
+.coverage
+coverage.xml
+.pytest_cache/
+htmlcov/
+
+# Performance Reports
+tests/performance/report.html

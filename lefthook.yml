@@ -1,0 +1,8 @@
+pre-commit:
+  commands:
+    ruff-format:
+      run: uv run ruff format .
+    ruff-check:
+      run: uv run ruff check .
+    pytest:
+      run: uv run pytest
