@@ -61,7 +61,7 @@ def test_employee_shift_workflow(
     payload_emp_update = {
         "name": "Jane Miller Updated",
         "role": "Principal Architect",
-        "availability": {"monday": "8am-4pm"},
+        "availability": {"monday": "8am-4pm", "tuesday": "8am-4pm"},
     }
     resp_emp_update = client.put(f"/employees/{emp_id}", json=payload_emp_update)
     assert resp_emp_update.status_code == 200
