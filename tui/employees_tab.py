@@ -1,9 +1,53 @@
-import json
-from typing import Any, Optional
+from typing import Any, Dict, Optional
 from textual.app import ComposeResult
 from textual.containers import Horizontal, Vertical
 from textual.widgets import Button, DataTable, Input, Label, Static
 from tui.client import APIClient, get_error_message
+
+
+def format_availability(availability: Dict[str, Any]) -> str:
+    """Format availability dict to a human-readable multi-line string."""
+    if not availability or not isinstance(availability, dict):
+        return "Not set"
+
+    DAY_ORDER = [
+        "monday",
+        "tuesday",
+        "wednesday",
+        "thursday",
+        "friday",
+        "saturday",
+        "sunday",
+    ]
+    parts = []
+
+    for d in DAY_ORDER:
+        # Find key case-insensitively
+        val = None
+        for k, v in availability.items():
+            if k.lower() == d:
+                val = v
+                break
+        if not val:
+            continue
+
+        day_label = d[:3].capitalize()
+
+        # Parse value
+        if isinstance(val, dict):
+            start = val.get("start", "")
+            end = val.get("end", "")
+            if start and end:
+                parts.append(f"{day_label}: {start} - {end}")
+        elif isinstance(val, str):
+            val_clean = val.strip()
+            if val_clean and val_clean.lower() != "off":
+                parts.append(f"{day_label}: {val_clean}")
+
+    if not parts:
+        return "Not set"
+
+    return "\n".join(parts)
 
 
 class EmployeesTab(Horizontal):
@@ -13,6 +57,7 @@ class EmployeesTab(Horizontal):
         super().__init__(**kwargs)
         self.client: APIClient = client
         self.editing_id: Optional[int] = None
+        self._employees_cache: Dict[int, Dict[str, Any]] = {}
 
     def compose(self) -> ComposeResult:
         with Vertical(id="emp_list_pane"):
@@ -110,8 +155,13 @@ class EmployeesTab(Horizontal):
         response = await self.client.request("GET", "/employees")
         if response.status_code == 200:
             employees = response.json()
+            self._employees_cache.clear()
             for emp in employees:
-                avail_str = json.dumps(emp.get("availability", {}))
+                emp_id = emp.get("id")
+                if emp_id is not None:
+                    self._employees_cache[emp_id] = emp
+
+                avail_str = format_availability(emp.get("availability", {}))
                 hours_val = emp_hours.get(emp.get("id"), 0.0)
                 table.add_row(
                     str(emp.get("id", "")),
@@ -175,13 +225,9 @@ class EmployeesTab(Horizontal):
         )
         self.query_one("#inp_emp_name", Input).value = row[1]
         self.query_one("#inp_emp_role", Input).value = row[2]
-        import json
-
-        try:
-            avail_dict = json.loads(row[4])
-            if not isinstance(avail_dict, dict):
-                avail_dict = {}
-        except Exception:
+        emp = self._employees_cache.get(self.editing_id, {})
+        avail_dict = emp.get("availability", {})
+        if not isinstance(avail_dict, dict):
             avail_dict = {}
 
         for day in [
