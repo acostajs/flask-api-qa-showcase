@@ -115,3 +115,87 @@ def test_delete_employee_with_shifts_fails(
     # Deleting the employee should raise IntegrityError because shifts have nullable=False for employee_id
     with pytest.raises(IntegrityError):
         client.delete(f"/employees/{emp.id}")
+
+
+def test_integration_scheduling_constraints(client: FlaskClient) -> None:
+    """Test scheduling constraints integration workflow (availability & overlap validations)."""
+    # 1. Create a new employee with Monday availability
+    emp_payload = {
+        "name": "Jane Scheduler",
+        "role": "Coordinator",
+        "availability": {"monday": "8am-4pm"},
+    }
+    resp_emp = client.post("/employees", json=emp_payload)
+    assert resp_emp.status_code == 201
+    emp_id = resp_emp.get_json()["id"]
+
+    # 2. Try scheduling outside availability day (Tuesday)
+    payload_tue = {
+        "start_time": "09:00",
+        "end_time": "17:00",
+        "day": "Tuesday",
+        "employee_id": emp_id,
+    }
+    resp_tue = client.post("/shifts", json=payload_tue)
+    assert resp_tue.status_code == 400
+    assert "not available on Tuesday" in resp_tue.get_json()["error"]
+
+    # 3. Try scheduling outside availability hours on Monday (too early)
+    payload_early = {
+        "start_time": "07:00",
+        "end_time": "15:00",
+        "day": "Monday",
+        "employee_id": emp_id,
+    }
+    resp_early = client.post("/shifts", json=payload_early)
+    assert resp_early.status_code == 400
+    assert "falls outside availability" in resp_early.get_json()["error"]
+
+    # 4. Create first valid shift on Monday (8am - 12pm)
+    payload_s1 = {
+        "start_time": "08:00",
+        "end_time": "12:00",
+        "day": "Monday",
+        "employee_id": emp_id,
+    }
+    resp_s1 = client.post("/shifts", json=payload_s1)
+    assert resp_s1.status_code == 201
+    s1_id = resp_s1.get_json()["id"]
+
+    # 5. Create second valid shift on Monday (12pm - 4pm)
+    payload_s2 = {
+        "start_time": "12:00",
+        "end_time": "16:00",
+        "day": "Monday",
+        "employee_id": emp_id,
+    }
+    resp_s2 = client.post("/shifts", json=payload_s2)
+    assert resp_s2.status_code == 201
+    s2_id = resp_s2.get_json()["id"]
+
+    # 6. Try creating an overlapping shift on Monday (10am - 2pm)
+    payload_overlap = {
+        "start_time": "10:00",
+        "end_time": "14:00",
+        "day": "Monday",
+        "employee_id": emp_id,
+    }
+    resp_overlap = client.post("/shifts", json=payload_overlap)
+    assert resp_overlap.status_code == 400
+    assert "overlaps with existing shift" in resp_overlap.get_json()["error"]
+
+    # 7. Try updating first shift to overlap with second shift (8am - 2pm overlaps with 12pm - 4pm)
+    payload_s1_update = {
+        "start_time": "08:00",
+        "end_time": "14:00",
+        "day": "Monday",
+        "employee_id": emp_id,
+    }
+    resp_update = client.put(f"/shifts/{s1_id}", json=payload_s1_update)
+    assert resp_update.status_code == 400
+    assert "overlaps with existing shift" in resp_update.get_json()["error"]
+
+    # 8. Clean up
+    client.delete(f"/shifts/{s1_id}")
+    client.delete(f"/shifts/{s2_id}")
+    client.delete(f"/employees/{emp_id}")
