@@ -19,3 +19,7 @@ htmlcov/
 
 # Performance Reports
 tests/performance/report.html
+
+# Databases
+instance/
+*.db
